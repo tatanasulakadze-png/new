@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Мой Помощник</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--tg-theme-bg-color, #ffffff);
+            color: var(--tg-theme-text-color, #000000);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0 20px;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 15px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            opacity: 0.6;
+        }
+
+        .card {
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            border-radius: 20px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-text {
+            font-size: 14px;
+            opacity: 0.7;
+            line-height: 1.5;
+        }
+
+        .input {
+            width: 100%;
+            padding: 16px;
+            border-radius: 14px;
+            border: 2px solid transparent;
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            color: var(--tg-theme-text-color, #000);
+            font-size: 16px;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input:focus {
+            border-color: var(--tg-theme-button-color, #2ea6ff);
+        }
+
+        .button {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 14px;
+            background: var(--tg-theme-button-color, #2ea6ff);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .button:active {
+            transform: scale(0.97);
+            opacity: 0.9;
+        }
+
+        .button-secondary {
+            background: transparent;
+            color: var(--tg-theme-button-color, #2ea6ff);
+            border: 2px solid var(--tg-theme-button-color, #2ea6ff);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="avatar">🤝</div>
+        <div class="title">Помощник</div>
+        <div class="subtitle">Готов помочь вам 24/7</div>
+    </div>
+
+    <div class="card" onclick="chooseOption('help')">
+        <div class="card-title">❓ Помощь</div>
+        <div class="card-text">Получить ответ на вопрос</div>
+    </div>
+
+    <div class="card" onclick="chooseOption('info')">
+        <div class="card-title">📋 Информация</div>
+        <div class="card-text">Узнать больше о боте</div>
+    </div>
+
+    <div class="card" onclick="chooseOption('contact')">
+        <div class="card-title">💬 Связаться</div>
+        <div class="card-text">Написать администратору</div>
+    </div>
+
+    <input type="text" class="input" id="userInput" placeholder="Ваш вопрос...">
+    <button class="button" onclick="sendData()">Отправить</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        tg.setHeaderColor('#667eea');
+        tg.setBackgroundColor('#ffffff');
+
+        function chooseOption(option) {
+            tg.HapticFeedback.impactOccurred('light');
+            tg.sendData(JSON.stringify({ action: option }));
+        }
+
+        function sendData() {
+            const text = document.getElementById('userInput').value.trim();
+            if (!text) {
+                tg.HapticFeedback.notificationOccurred('error');
+                return;
+            }
+            tg.HapticFeedback.notificationOccurred('success');
+            tg.sendData(JSON.stringify({ action: 'message', text: text }));
+            tg.close();
+        }
+    </script>
+</body>
+</html>
